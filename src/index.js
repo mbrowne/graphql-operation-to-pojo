@@ -61,13 +61,13 @@ class ASTtoPOJOConverter {
             | OperationDefinitionNode
             | SelectionNode
             | FragmentDefinitionNode = this.info.operation,
-        tree = [],
+        tree: FieldPOJO[] = [],
         parentPath = '',
         // the type definition from the schema that corresponds to `ast.selectionSet`
         parentSchemaDef: GraphQLCompositeType = this.getOperationTypeDef(),
         enclosingFragmentType?: string
     ): FieldPOJO[] {
-        const fieldMap = {}
+        const fieldMap: { [key: string]: FieldPOJO } = {}
         for (const selectionAst of this.getSelections(ast)) {
             if (this.isFragment(selectionAst)) {
                 const fragmentAst:
@@ -162,7 +162,7 @@ class ASTtoPOJOConverter {
                 }
             }
         }
-        return ([...tree, ...Object.values(fieldMap)]: any[])
+        return [...tree, ...(Object.values(fieldMap): any)]
     }
 
     // Get the top-level type definition (either Query, Mutation, or Subscription)
@@ -207,7 +207,7 @@ class ASTtoPOJOConverter {
     mergeFieldSelections(
         selectionSet1: FieldPOJO[],
         selectionSet2?: FieldPOJO[]
-    ) {
+    ): FieldPOJO[] {
         if (!Array.isArray(selectionSet1)) {
             throw Error('selectionSet1 must be an array')
         }
@@ -237,7 +237,7 @@ class ASTtoPOJOConverter {
                 mergedFieldsByName[alias] = field
             }
         }
-        return Object.values(mergedFieldsByName)
+        return (Object.values(mergedFieldsByName): any)
     }
 
     isFragment(ast: SelectionNode) {
