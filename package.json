@@ -1,0 +1,45 @@
+{
+  "name": "graphql-operation-to-pojo",
+  "version": "1.0.0",
+  "description": "Converts GraphQL operations to plain old JS objects (POJOs), ready to to be serialized to JSON",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "babel src/ -d lib/",
+    "flow": "flow",
+    "watch": "babel -w src/ -d lib/",
+    "prepublish": "npm run build",
+    "test": "flow check && jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "mbrowne/graphql-operation-to-pojo"
+  },
+  "keywords": [
+    "graphql",
+    "graphql-js",
+    "json",
+    "query",
+    "fields",
+    "graphqlresolveinfo",
+    "ast"
+  ],
+  "author": "Matt Browne",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mbrowne/graphql-operation-to-pojo/issues"
+  },
+  "homepage": "https://github.com/mbrowne/graphql-operation-to-pojo#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-flow": "^7.0.0",
+    "flow-bin": "^0.82.0",
+    "graphql": "^14.0.2",
+    "prettier": "~1.14.3"
+  },
+  "dependencies": {
+    "lodash.keyby": "^4.6.0"
+  }
+}

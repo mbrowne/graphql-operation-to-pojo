@@ -1,0 +1,6 @@
+{
+  "editor.formatOnSave": true,
+  // disabled so flow types can be used without warnings
+  // see https://stackoverflow.com/questions/48859169/js-types-can-only-be-used-in-a-ts-file-visual-studio-code-using-ts-check
+  "javascript.validate.enable": false
+}
