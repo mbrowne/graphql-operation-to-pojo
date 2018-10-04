@@ -197,10 +197,8 @@ class ASTtoPOJOConverter {
                 field.fragmentType
             ): any)
         }
-        const schemaField: GraphQLField<
-            *,
-            *
-        > = (parentSchemaDef: any).getFields()[field.name]
+        // prettier-ignore
+        const schemaField: GraphQLField<*, *> = (parentSchemaDef: any).getFields()[field.name]
         return schemaField && getNamedType(schemaField.type)
     }
 
@@ -259,7 +257,6 @@ class ASTtoPOJOConverter {
     ): $ReadOnlyArray<SelectionNode> {
         if (ast && ast.selectionSet && ast.selectionSet.selections) {
             return (ast.selectionSet: any).selections
-            //return (ast.selectionSet.selections: Object[])
         }
         return []
     }
