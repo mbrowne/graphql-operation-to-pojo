@@ -4,7 +4,10 @@
   "description": "Converts GraphQL operations to plain old JS objects (POJOs), ready to to be serialized to JSON",
   "main": "lib/index.js",
   "scripts": {
-    "build": "babel src/ -d lib/",
+    "build": "npm run build:clean && npm run build:cjs && npm run build:flow",
+    "build:clean": "rm -rf ./lib && mkdir ./lib",
+    "build:cjs": "babel src/ -d lib/",
+    "build:flow": "for file in $(find ./src -name '*.js'); do cp \"$file\" `echo \"$file\" | sed 's/\\/src\\//\\/lib\\//g'`.flow; done",
     "flow": "flow",
     "watch": "babel -w src/ -d lib/",
     "prepublish": "npm run build",
