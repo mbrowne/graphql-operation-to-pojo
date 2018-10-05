@@ -1,2 +1,7 @@
+.flowconfig
 .gitignore
+.prettierrc.json
 .sonarlint
+.vscode
+babel.config.js
+tests

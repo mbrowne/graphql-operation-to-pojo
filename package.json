@@ -30,6 +30,7 @@
     "url": "https://github.com/mbrowne/graphql-operation-to-pojo/issues"
   },
   "homepage": "https://github.com/mbrowne/graphql-operation-to-pojo#readme",
+  "typings": "typings/index.d.ts",
   "devDependencies": {
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",
