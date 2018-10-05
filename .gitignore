@@ -1,4 +1,4 @@
 .DS_Store
 .sonarlint
-dist
+lib
 node_modules

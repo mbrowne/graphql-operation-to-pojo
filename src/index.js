@@ -1,7 +1,6 @@
 // @flow
 import './polyfills'
 import { valueFromASTUntyped, getNamedType } from 'graphql'
-import keyBy from 'lodash.keyby'
 import type {
     GraphQLResolveInfo,
     GraphQLCompositeType,
@@ -212,9 +211,9 @@ class ASTtoPOJOConverter {
         if (!selectionSet2) {
             return [...selectionSet1]
         }
-        const selectionSet1ByName = keyBy(
-            selectionSet1,
-            field => field.alias || field.name
+        // $FlowFixMe - this can be removed after Object.fromEntries() is in the standard flow lib
+        const selectionSet1ByName = Object.fromEntries(
+            selectionSet1.map(field => [field.alias || field.name, field])
         )
         const mergedFieldsByName = { ...selectionSet1ByName }
         for (const field of selectionSet2) {
@@ -266,7 +265,7 @@ class ASTtoPOJOConverter {
             return {}
         }
         const { variableValues } = this.info
-        // $FlowFixMe - this can be removed after Object.fromEntries() is in the standard flow lib
+        // $FlowFixMe
         const args = Object.fromEntries(
             ast.map(arg => {
                 const name = arg.name.value
