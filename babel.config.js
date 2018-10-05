@@ -1,4 +1,4 @@
-const presets = [['@babel/flow', { targets: { node: 6 } }]]
+const presets = ['@babel/preset-flow']
 
 const plugins = [
     '@babel/plugin-proposal-object-rest-spread',
@@ -7,6 +7,6 @@ const plugins = [
 
 module.exports = {
     presets,
-    plugins,
-    ignore: ['**/*.test.js']
+    plugins
+    // ignore: ['**/*.test.js', '**/fixtures']
 }
