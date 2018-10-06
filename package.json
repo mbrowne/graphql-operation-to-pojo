@@ -14,6 +14,11 @@
     "test": "flow check && jest",
     "testonly": "jest"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "mbrowne/graphql-operation-to-pojo"
@@ -45,7 +50,9 @@
     "babel-jest": "^23.6.0",
     "flow-bin": "^0.82.0",
     "graphql": "^14.0.2",
+    "husky": "^1.1.1",
     "jest": "^23.6.0",
-    "prettier": "~1.14.3"
+    "prettier": "~1.14.3",
+    "pretty-quick": "^1.7.0"
   }
 }
