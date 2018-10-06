@@ -71,7 +71,9 @@ class ASTtoPOJOConverter {
             if (this.isFragment(selectionAst)) {
                 const fragmentAst:
                     | FragmentDefinitionNode
-                    | InlineFragmentNode = (this.getAST(selectionAst): any)
+                    | InlineFragmentNode = (this.getFragmentFieldAST(
+                    selectionAst
+                ): any)
                 const fragmentType =
                     fragmentAst.typeCondition &&
                     fragmentAst.typeCondition.name.value
@@ -241,7 +243,7 @@ class ASTtoPOJOConverter {
         return ast.kind === 'InlineFragment' || ast.kind === 'FragmentSpread'
     }
 
-    getAST(
+    getFragmentFieldAST(
         ast: SelectionNode
     ): FragmentDefinitionNode | FieldNode | InlineFragmentNode {
         if (ast.kind === 'FragmentSpread') {
