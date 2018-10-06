@@ -29,6 +29,13 @@ export type FieldPOJO = {
 }
 
 /**
+ * Convert a GraphQL operation to a JSON string. Internally uses graphqlOperationToPOJO().
+ */
+export function graphqlOperationToJSON(info: GraphQLResolveInfo) {
+    return JSON.stringify(graphqlOperationToPOJO(info))
+}
+
+/**
  * Converts the AST of a GraphQL operation (query/subscription/mutation) to an
  * easier-to-consume format. Returns a Plain Old Javascript Object (POJO),
  * ready to be serialized to a JSON string.
