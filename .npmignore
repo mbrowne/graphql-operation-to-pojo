@@ -4,4 +4,5 @@
 .sonarlint
 .vscode
 babel.config.js
+demo
 tests

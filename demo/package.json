@@ -1,0 +1,8 @@
+{
+  "name": "graphql-operation-to-pojo-demo",
+  "version": "0.1.0",
+  "license": "ISC",
+  "dependencies": {
+    "graphql-tools": "^4.0.0"
+  }
+}
