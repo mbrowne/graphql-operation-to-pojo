@@ -4,6 +4,18 @@ Converts GraphQL operations to plain old JS objects (POJOs), ready to to be seri
 
 This can be used to parse the `info` argument (`GraphQLResolveInfo`) passed to GraphQL resolvers.
 
+## Installation
+
+```bash
+npm i -S graphql-operation-to-pojo
+```
+
+Or:
+
+```bash
+yarn add graphql-operation-to-pojo
+```
+
 ## Usage
 
 ```js
