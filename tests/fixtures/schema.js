@@ -10,7 +10,6 @@ const typeDefs = `
         id: ID!
         name: String!
         widgets(page: Int): [Widget!]!
-        test(foo: Int): Int
     }
 
     type Query {
