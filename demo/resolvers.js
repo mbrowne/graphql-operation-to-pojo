@@ -159,13 +159,7 @@ function fromCursor(str) {
 
 const resolvers = {
     Query: {
-        hero: (root, { episode }, context, info) => {
-            console.log(
-                JSON.stringify(graphqlOperationToPOJO(info), undefined, 2)
-            )
-            return getHero(episode)
-        },
-        // hero: (root, { episode }) => getHero(episode),
+        hero: (root, { episode }) => getHero(episode),
         character: (root, { id }) => getCharacter(id),
         human: (root, { id }) => getHuman(id),
         droid: (root, { id }) => getDroid(id),
