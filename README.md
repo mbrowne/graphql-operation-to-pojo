@@ -33,6 +33,20 @@ const jsonString = graphqlOperationToJSON(info)
 
 (This is equivalent to calling `JSON.stringify(graphqlOperationToPOJO(info))`)
 
+### Options
+
+Options can optionally be passed as a second argument, e.g.:
+
+```js
+graphqlOperationToPOJO(info, { includeFieldPath: true })
+```
+
+Available options:
+
+-   `includeFieldPath`: boolean (defaults to false)
+
+    If true, a `path` property will be added to each field object and set to the path to the field from the root of the query, e.g. `'hero.name'`
+
 ## Examples
 
 Given the query:
