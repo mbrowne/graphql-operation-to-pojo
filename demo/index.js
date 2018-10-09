@@ -27,7 +27,7 @@ forEachTopLevelField(schema, field => {
     const fieldResolver = field.resolve
     field.resolve = (source, args, context, info) => {
         console.log(JSON.stringify(graphqlOperationToPOJO(info), undefined, 2))
-        fieldResolver(source, args, context, info)
+        return fieldResolver(source, args, context, info)
     }
 })
 
