@@ -101,4 +101,34 @@ describe('graphqlOperationToPOJO', () => {
             ]
         })
     })
+
+    it('respects includeFieldPath option', async () => {
+        const data = await graphql(schema, aliasQuery, null, {}, { id: 1 })
+        expect(info).toBeDefined()
+        if (data.errors) {
+            throw new Error('graphql error(s):\n' + JSON.stringify(data.errors))
+        }
+        expect(
+            graphqlOperationToPOJO(info, { includeFieldPath: true })
+        ).toEqual({
+            operation: 'query',
+            fields: [
+                {
+                    name: 'user',
+                    path: 'user',
+                    fields: [
+                        {
+                            name: 'widgets',
+                            alias: 'aliasForWidgets',
+                            path: 'user.aliasForWidgets',
+                            fields: [
+                                { name: 'id', path: 'user.aliasForWidgets.id' }
+                            ]
+                        }
+                    ],
+                    arguments: { id: '1' }
+                }
+            ]
+        })
+    })
 })

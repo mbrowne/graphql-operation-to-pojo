@@ -1,7 +1,8 @@
 import { GraphQLResolveInfo } from 'graphql'
 
 declare function graphqlOperationToPOJO(
-    info: GraphQLResolveInfo
+    info: GraphQLResolveInfo,
+    options?: Options
 ): GraphQLOperationPOJO
 
 export type GraphQLOperationPOJO = {
@@ -16,6 +17,11 @@ export type FieldPOJO = {
     fields?: FieldPOJO[]
     arguments?: { [name: string]: any }
     directives?: { [name: string]: any }
+    path?: string
+}
+
+export type Options = {
+    includeFieldPath?: boolean
 }
 
 export default graphqlOperationToPOJO

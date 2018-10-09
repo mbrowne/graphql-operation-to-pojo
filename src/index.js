@@ -25,14 +25,22 @@ export type FieldPOJO = {
     fragmentType?: string,
     fields?: FieldPOJO[],
     arguments?: Object,
-    directives?: Object
+    directives?: Object,
+    path?: string
+}
+
+export type Options = {
+    includeFieldPath?: boolean
 }
 
 /**
  * Convert a GraphQL operation to a JSON string. Internally uses graphqlOperationToPOJO().
  */
-export function graphqlOperationToJSON(info: GraphQLResolveInfo) {
-    return JSON.stringify(graphqlOperationToPOJO(info))
+export function graphqlOperationToJSON(
+    info: GraphQLResolveInfo,
+    options?: Options
+) {
+    return JSON.stringify(graphqlOperationToPOJO(info, options))
 }
 
 /**
@@ -41,11 +49,12 @@ export function graphqlOperationToJSON(info: GraphQLResolveInfo) {
  * ready to be serialized to a JSON string.
  */
 export default function graphqlOperationToPOJO(
-    info: GraphQLResolveInfo
+    info: GraphQLResolveInfo,
+    options?: Options
 ): GraphQLOperationPOJO {
     // console.log('info: ', JSON.stringify(info))
     const operationAst = info.operation
-    const converter = new ASTtoPOJOConverter(info)
+    const converter = new ASTtoPOJOConverter(info, options)
     return {
         operation: operationAst.operation,
         fields: converter.convert()
@@ -54,14 +63,17 @@ export default function graphqlOperationToPOJO(
 
 class ASTtoPOJOConverter {
     info: GraphQLResolveInfo
+    options: Options
 
-    constructor(info) {
-        this.info = info
+    static defaultOptions = {
+        includeFieldPath: false
     }
 
-    // @TODO
-    // Add an option to include the field path (fieldPath variable below) and update tests.
-    // Currently it's only used for error messages.
+    constructor(info: GraphQLResolveInfo, options?: Options) {
+        this.info = info
+        this.options = { ...ASTtoPOJOConverter.defaultOptions, ...options }
+    }
+
     convert(
         ast:
             | OperationDefinitionNode
@@ -126,6 +138,9 @@ class ASTtoPOJOConverter {
                 }
                 const fieldPath =
                     (parentPath ? parentPath + '.' : '') + (alias || name || '')
+                if (this.options.includeFieldPath) {
+                    field.path = fieldPath
+                }
                 if (fieldAst.selectionSet) {
                     // get the type definition from the schema for the return type of this field
                     const returnType = this.getFieldReturnType(
@@ -278,7 +293,7 @@ class ASTtoPOJOConverter {
         const args = Object.fromEntries(
             ast.map(arg => {
                 const name = arg.name.value
-                // TODO refactor to use valueFromAST() and pass type info in the expected format so that
+                // @TODO refactor to use valueFromAST() and pass type info in the expected format so that
                 // we can support custom scalars as input arguments
                 const val = valueFromASTUntyped(arg.value, variableValues)
                 return [name, val]
