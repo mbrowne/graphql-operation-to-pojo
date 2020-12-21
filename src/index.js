@@ -83,7 +83,6 @@ class ASTtoPOJOConverter {
             | OperationDefinitionNode
             | SelectionNode
             | FragmentDefinitionNode = this.info.operation,
-        tree: FieldPOJO[] = [],
         parentPath = '',
         // the type definition from the schema that corresponds to `ast.selectionSet`
         parentSchemaDef: GraphQLCompositeType = this.getOperationTypeDef(),
@@ -102,7 +101,6 @@ class ASTtoPOJOConverter {
                     fragmentAst.typeCondition.name.value
                 const fragmentFields = this.convert(
                     fragmentAst,
-                    tree,
                     parentPath,
                     parentSchemaDef,
                     fragmentType
@@ -161,7 +159,6 @@ class ASTtoPOJOConverter {
                     }
                     field.fields = this.convert(
                         fieldAst,
-                        [],
                         fieldPath,
                         (getNamedType(returnType): any)
                     )
@@ -189,7 +186,7 @@ class ASTtoPOJOConverter {
                 }
             }
         }
-        return [...tree, ...(Object.values(fieldMap): any)]
+        return (Object.values(fieldMap): any)
     }
 
     // Get the top-level type definition (either Query, Mutation, or Subscription)
