@@ -38,7 +38,10 @@ const jsonString = graphqlOperationToJSON(info)
 Options can optionally be passed as a second argument, e.g.:
 
 ```js
-graphqlOperationToPOJO(info, { includeFieldPath: true })
+graphqlOperationToPOJO(info, {
+    includeFieldPath: true,
+    includeReturnType: true
+})
 ```
 
 Available options:
@@ -46,6 +49,30 @@ Available options:
 -   `includeFieldPath`: boolean (defaults to false)
 
     If true, a `path` property will be added to each field object and set to the path to the field from the root of the query, e.g. `'hero.name'`
+
+-   `includeReturnTypes`: boolean (defaults to false)
+
+    If true, the return type of each field will be included in the result.
+
+> Tip:
+> When using `includeReturnTypes`, you can use `getNamedType()` from graphql.js to strip any wrapping non-null or list types and get the underlying type. For example:
+>
+> ```lang-js
+> import { getNamedType } from 'graphql'
+> ...
+> /*
+> Suppose we're running a query that returns a list of users:
+>
+>   type Query {
+>     users: [User!]!
+>   }
+> */
+> const returnType = getNamedType(queryPojo.fields[0].returnType)
+> console.log(returnType.toString())
+> // Output: 'User'
+> ```
+
+</code>
 
 ## Examples
 

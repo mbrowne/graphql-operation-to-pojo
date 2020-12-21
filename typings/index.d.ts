@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql'
+import { GraphQLResolveInfo, GraphQLOutputType } from 'graphql'
 
 declare function graphqlOperationToPOJO(
     info: GraphQLResolveInfo,
@@ -18,10 +18,12 @@ export type FieldPOJO = {
     arguments?: { [name: string]: any }
     directives?: { [name: string]: any }
     path?: string
+    returnType?: GraphQLOutputType
 }
 
 export type Options = {
     includeFieldPath?: boolean
+    includeReturnTypes?: boolean
 }
 
 export default graphqlOperationToPOJO
