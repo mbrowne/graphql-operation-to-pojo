@@ -1,6 +1,6 @@
 // @flow
 import './polyfills'
-import { valueFromASTUntyped } from 'graphql'
+import { valueFromASTUntyped, getNamedType } from 'graphql'
 import type {
     GraphQLResolveInfo,
     GraphQLCompositeType,
@@ -163,7 +163,7 @@ class ASTtoPOJOConverter {
                         fieldAst,
                         [],
                         fieldPath,
-                        (returnType: any)
+                        (getNamedType(returnType): any)
                     )
                 }
                 const args = this.argumentsFromAst(fieldAst.arguments)
