@@ -1,4 +1,3 @@
-// @flow
 import './polyfills'
 import { valueFromASTUntyped, getNamedType } from 'graphql'
 import type {
@@ -83,7 +82,6 @@ class ASTtoPOJOConverter {
             | OperationDefinitionNode
             | SelectionNode
             | FragmentDefinitionNode = this.info.operation,
-        tree: FieldPOJO[] = [],
         parentPath = '',
         // the type definition from the schema that corresponds to `ast.selectionSet`
         parentSchemaDef: GraphQLCompositeType = this.getOperationTypeDef(),
@@ -102,7 +100,6 @@ class ASTtoPOJOConverter {
                     fragmentAst.typeCondition.name.value
                 const fragmentFields = this.convert(
                     fragmentAst,
-                    tree,
                     parentPath,
                     parentSchemaDef,
                     fragmentType
@@ -145,23 +142,28 @@ class ASTtoPOJOConverter {
                 if (this.options.includeFieldPath) {
                     field.path = fieldPath
                 }
-                if (fieldAst.selectionSet) {
-                    // get the type definition from the schema for the return type of this field
-                    const returnType = this.getFieldReturnType(
+                // get the type definition from the schema for the return type of this field
+                let returnType: GraphQLOutputType
+                if (this.options.includeReturnTypes) {
+                    // If the includeReturnTypes option is enabled, we always get the return type.
+                    // Otherwise, we only need it if there are nested field selections.
+                    returnType = this.getFieldReturnType(
                         field,
-                        parentSchemaDef
+                        parentSchemaDef,
+                        fieldPath
                     )
+                    field.returnType = returnType
+                }
+                if (fieldAst.selectionSet) {
                     if (!returnType) {
-                        throw Error(
-                            `graphqlOperationToPOJO(): Error matching query to schema: could not find type definition for field '${fieldPath}'`
+                        returnType = this.getFieldReturnType(
+                            field,
+                            parentSchemaDef,
+                            fieldPath
                         )
-                    }
-                    if (this.options.includeReturnTypes) {
-                        field.returnType = returnType
                     }
                     field.fields = this.convert(
                         fieldAst,
-                        [],
                         fieldPath,
                         (getNamedType(returnType): any)
                     )
@@ -189,7 +191,7 @@ class ASTtoPOJOConverter {
                 }
             }
         }
-        return [...tree, ...(Object.values(fieldMap): any)]
+        return (Object.values(fieldMap): any)
     }
 
     // Get the top-level type definition (either Query, Mutation, or Subscription)
@@ -215,8 +217,9 @@ class ASTtoPOJOConverter {
     // for a given field in the query, get its return type from the schema
     getFieldReturnType(
         field: FieldPOJO,
-        parentSchemaDef: GraphQLCompositeType
-    ) {
+        parentSchemaDef: GraphQLCompositeType,
+        fieldPath: string
+    ): GraphQLOutputType {
         // Get the concrete type for fragment fields.
         // This is needed because for fragment fields, the original parentSchemaDef might be a union or interface type.
         if (field.fragmentType) {
@@ -226,7 +229,12 @@ class ASTtoPOJOConverter {
         }
         // prettier-ignore
         const schemaField: GraphQLField<*, *> = (parentSchemaDef: any).getFields()[field.name]
-        return schemaField && schemaField.type
+        if (!schemaField) {
+            throw Error(
+                `graphqlOperationToPOJO(): Error matching query to schema: could not find type definition for field '${fieldPath}'`
+            )
+        }
+        return schemaField.type
     }
 
     mergeFieldSelections(
