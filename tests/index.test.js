@@ -152,7 +152,14 @@ describe('graphqlOperationToPOJO', () => {
                             name: 'widgets',
                             alias: 'aliasForWidgets',
                             returnType: userType.getFields()['widgets'].type,
-                            fields: [{ name: 'id' }],
+                            fields: [
+                                {
+                                    name: 'id',
+                                    returnType: schema
+                                        .getType('Widget')
+                                        .getFields()['id'].type,
+                                },
+                            ],
                         },
                     ],
                     arguments: { id: '1' },
