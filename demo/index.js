@@ -19,11 +19,11 @@ const query = `
 
 const schema = makeExecutableSchema({
     typeDefs,
-    resolvers
+    resolvers,
 })
 
 // Output the result of graphqlOperationToPOJO() for every query
-forEachTopLevelField(schema, field => {
+forEachTopLevelField(schema, (field) => {
     const fieldResolver = field.resolve
     field.resolve = (source, args, context, info) => {
         console.log(JSON.stringify(graphqlOperationToPOJO(info), undefined, 2))
@@ -33,12 +33,12 @@ forEachTopLevelField(schema, field => {
 
 // Execute the query
 graphql(schema, query)
-    .then(result => {
+    .then((result) => {
         if (result.errors) {
             console.log(result.errors)
         }
     })
-    .catch(e => {
+    .catch((e) => {
         throw e
     })
 
@@ -46,7 +46,7 @@ function forEachTopLevelField(schema, fn) {
     const rootTypes = [
         schema.getQueryType(),
         schema.getMutationType(),
-        schema.getSubscriptionType()
+        schema.getSubscriptionType(),
     ].filter(Boolean)
 
     for (const type of rootTypes) {

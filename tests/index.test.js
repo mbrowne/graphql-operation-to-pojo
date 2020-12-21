@@ -1,4 +1,4 @@
-import { graphql } from 'graphql'
+import { graphql, getNamedType } from 'graphql'
 import schema from './fixtures/schema'
 import graphqlOperationToPOJO from '../src'
 
@@ -67,14 +67,14 @@ describe('graphqlOperationToPOJO', () => {
                         {
                             name: 'widgets',
                             fields: [{ name: 'id' }, { name: 'name' }],
-                            fragmentType: 'User'
+                            fragmentType: 'User',
                         },
                         { name: 'name', fragmentType: 'User' },
-                        { name: 'id', fragmentType: 'User' }
+                        { name: 'id', fragmentType: 'User' },
                     ],
-                    arguments: { id: '1' }
-                }
-            ]
+                    arguments: { id: '1' },
+                },
+            ],
         })
     })
 
@@ -93,12 +93,12 @@ describe('graphqlOperationToPOJO', () => {
                         {
                             name: 'widgets',
                             alias: 'aliasForWidgets',
-                            fields: [{ name: 'id' }]
-                        }
+                            fields: [{ name: 'id' }],
+                        },
                     ],
-                    arguments: { id: '1' }
-                }
-            ]
+                    arguments: { id: '1' },
+                },
+            ],
         })
     })
 
@@ -122,13 +122,42 @@ describe('graphqlOperationToPOJO', () => {
                             alias: 'aliasForWidgets',
                             path: 'user.aliasForWidgets',
                             fields: [
-                                { name: 'id', path: 'user.aliasForWidgets.id' }
-                            ]
-                        }
+                                { name: 'id', path: 'user.aliasForWidgets.id' },
+                            ],
+                        },
                     ],
-                    arguments: { id: '1' }
-                }
-            ]
+                    arguments: { id: '1' },
+                },
+            ],
+        })
+    })
+
+    it('respects includeReturnTypes option', async () => {
+        const data = await graphql(schema, aliasQuery, null, {}, { id: 1 })
+        expect(info).toBeDefined()
+        if (data.errors) {
+            throw new Error('graphql error(s):\n' + JSON.stringify(data.errors))
+        }
+        const userType = schema.getType('User')
+        expect(
+            graphqlOperationToPOJO(info, { includeReturnTypes: true })
+        ).toEqual({
+            operation: 'query',
+            fields: [
+                {
+                    name: 'user',
+                    returnType: userType,
+                    fields: [
+                        {
+                            name: 'widgets',
+                            alias: 'aliasForWidgets',
+                            returnType: userType.getFields()['widgets'].type,
+                            fields: [{ name: 'id' }],
+                        },
+                    ],
+                    arguments: { id: '1' },
+                },
+            ],
         })
     })
 })

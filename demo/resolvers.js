@@ -14,7 +14,7 @@ const humans = [
         appearsIn: ['NEWHOPE', 'EMPIRE', 'JEDI'],
         height: 1.72,
         mass: 77,
-        starships: ['3001', '3003']
+        starships: ['3001', '3003'],
     },
     {
         id: '1001',
@@ -23,7 +23,7 @@ const humans = [
         appearsIn: ['NEWHOPE', 'EMPIRE', 'JEDI'],
         height: 2.02,
         mass: 136,
-        starships: ['3002']
+        starships: ['3002'],
     },
     {
         id: '1002',
@@ -32,7 +32,7 @@ const humans = [
         appearsIn: ['NEWHOPE', 'EMPIRE', 'JEDI'],
         height: 1.8,
         mass: 80,
-        starships: ['3000', '3003']
+        starships: ['3000', '3003'],
     },
     {
         id: '1003',
@@ -41,7 +41,7 @@ const humans = [
         appearsIn: ['NEWHOPE', 'EMPIRE', 'JEDI'],
         height: 1.5,
         mass: 49,
-        starships: []
+        starships: [],
     },
     {
         id: '1004',
@@ -50,12 +50,12 @@ const humans = [
         appearsIn: ['NEWHOPE'],
         height: 1.8,
         mass: null,
-        starships: []
-    }
+        starships: [],
+    },
 ]
 
 const humanData = {}
-humans.forEach(ship => {
+humans.forEach((ship) => {
     humanData[ship.id] = ship
 })
 
@@ -65,19 +65,19 @@ const droids = [
         name: 'C-3PO',
         friends: ['1000', '1002', '1003', '2001'],
         appearsIn: ['NEWHOPE', 'EMPIRE', 'JEDI'],
-        primaryFunction: 'Protocol'
+        primaryFunction: 'Protocol',
     },
     {
         id: '2001',
         name: 'R2-D2',
         friends: ['1000', '1002', '1003'],
         appearsIn: ['NEWHOPE', 'EMPIRE', 'JEDI'],
-        primaryFunction: 'Astromech'
-    }
+        primaryFunction: 'Astromech',
+    },
 ]
 
 const droidData = {}
-droids.forEach(ship => {
+droids.forEach((ship) => {
     droidData[ship.id] = ship
 })
 
@@ -85,27 +85,27 @@ const starships = [
     {
         id: '3000',
         name: 'Millenium Falcon',
-        length: 34.37
+        length: 34.37,
     },
     {
         id: '3001',
         name: 'X-Wing',
-        length: 12.5
+        length: 12.5,
     },
     {
         id: '3002',
         name: 'TIE Advanced x1',
-        length: 9.2
+        length: 9.2,
     },
     {
         id: '3003',
         name: 'Imperial shuttle',
-        length: 20
-    }
+        length: 20,
+    },
 ]
 
 const starshipData = {}
-starships.forEach(ship => {
+starships.forEach((ship) => {
     starshipData[ship.id] = ship
 })
 
@@ -152,9 +152,7 @@ function toCursor(str) {
 }
 
 function fromCursor(str) {
-    return Buffer.from(str, 'base64')
-        .toString()
-        .slice(6)
+    return Buffer.from(str, 'base64').toString().slice(6)
 }
 
 const resolvers = {
@@ -170,11 +168,11 @@ const resolvers = {
 
             const allData = [...humans, ...droids, ...starships]
 
-            return allData.filter(obj => re.test(obj.name))
-        }
+            return allData.filter((obj) => re.test(obj.name))
+        },
     },
     Mutation: {
-        createReview: (root, { episode, review }) => review
+        createReview: (root, { episode, review }) => review,
     },
     Character: {
         __resolveType(data, context, info) {
@@ -185,7 +183,7 @@ const resolvers = {
                 return info.schema.getType('Droid')
             }
             return null
-        }
+        },
     },
     Human: {
         height: ({ height }, { unit }) => {
@@ -202,7 +200,7 @@ const resolvers = {
             const edges = friends
                 .map((friend, i) => ({
                     cursor: toCursor(i + 1),
-                    node: getCharacter(friend)
+                    node: getCharacter(friend),
                 }))
                 .slice(after, first + after)
             const slicedFriends = edges.map(({ node }) => node)
@@ -213,13 +211,15 @@ const resolvers = {
                     startCursor: edges.length > 0 ? edges[0].cursor : null,
                     hasNextPage: first + after < friends.length,
                     endCursor:
-                        edges.length > 0 ? edges[edges.length - 1].cursor : null
+                        edges.length > 0
+                            ? edges[edges.length - 1].cursor
+                            : null,
                 },
-                totalCount: friends.length
+                totalCount: friends.length,
             }
         },
         starships: ({ starships }) => starships.map(getStarship),
-        appearsIn: ({ appearsIn }) => appearsIn
+        appearsIn: ({ appearsIn }) => appearsIn,
     },
     Droid: {
         friends: ({ friends }) => friends.map(getCharacter),
@@ -229,7 +229,7 @@ const resolvers = {
             const edges = friends
                 .map((friend, i) => ({
                     cursor: toCursor(i + 1),
-                    node: getCharacter(friend)
+                    node: getCharacter(friend),
                 }))
                 .slice(after, first + after)
             const slicedFriends = edges.map(({ node }) => node)
@@ -240,22 +240,24 @@ const resolvers = {
                     startCursor: edges.length > 0 ? edges[0].cursor : null,
                     hasNextPage: first + after < friends.length,
                     endCursor:
-                        edges.length > 0 ? edges[edges.length - 1].cursor : null
+                        edges.length > 0
+                            ? edges[edges.length - 1].cursor
+                            : null,
                 },
-                totalCount: friends.length
+                totalCount: friends.length,
             }
         },
-        appearsIn: ({ appearsIn }) => appearsIn
+        appearsIn: ({ appearsIn }) => appearsIn,
     },
     FriendsConnection: {
         edges: ({ edges }) => edges,
         friends: ({ friends }) => friends,
         pageInfo: ({ pageInfo }) => pageInfo,
-        totalCount: ({ totalCount }) => totalCount
+        totalCount: ({ totalCount }) => totalCount,
     },
     FriendsEdge: {
         node: ({ node }) => node,
-        cursor: ({ cursor }) => cursor
+        cursor: ({ cursor }) => cursor,
     },
     Starship: {
         length: ({ length }, { unit }) => {
@@ -264,7 +266,7 @@ const resolvers = {
             }
 
             return length
-        }
+        },
     },
     SearchResult: {
         __resolveType(data, context, info) {
@@ -278,8 +280,8 @@ const resolvers = {
                 return info.schema.getType('Starship')
             }
             return null
-        }
-    }
+        },
+    },
 }
 
 module.exports = resolvers

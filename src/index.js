@@ -5,18 +5,19 @@ import type {
     GraphQLResolveInfo,
     GraphQLCompositeType,
     GraphQLField,
+    GraphQLOutputType,
     OperationDefinitionNode,
     SelectionNode,
     FieldNode,
     FragmentDefinitionNode,
     InlineFragmentNode,
     ArgumentNode,
-    DirectiveNode
+    DirectiveNode,
 } from 'graphql'
 
 export type GraphQLOperationPOJO = {
     operation: string,
-    fields: FieldPOJO[]
+    fields: FieldPOJO[],
 }
 
 export type FieldPOJO = {
@@ -26,11 +27,13 @@ export type FieldPOJO = {
     fields?: FieldPOJO[],
     arguments?: Object,
     directives?: Object,
-    path?: string
+    path?: string,
+    returnType?: GraphQLOutputType,
 }
 
 export type Options = {
-    includeFieldPath?: boolean
+    includeFieldPath?: boolean,
+    includeReturnTypes?: boolean,
 }
 
 /**
@@ -39,7 +42,7 @@ export type Options = {
 export function graphqlOperationToJSON(
     info: GraphQLResolveInfo,
     options?: Options
-) {
+): string {
     return JSON.stringify(graphqlOperationToPOJO(info, options))
 }
 
@@ -57,7 +60,7 @@ export default function graphqlOperationToPOJO(
     const converter = new ASTtoPOJOConverter(info, options)
     return {
         operation: operationAst.operation,
-        fields: converter.convert()
+        fields: converter.convert(),
     }
 }
 
@@ -66,7 +69,8 @@ class ASTtoPOJOConverter {
     options: Options
 
     static defaultOptions = {
-        includeFieldPath: false
+        includeFieldPath: false,
+        includeReturnTypes: false,
     }
 
     constructor(info: GraphQLResolveInfo, options?: Options) {
@@ -127,7 +131,7 @@ class ASTtoPOJOConverter {
                 const name = fieldAst.name ? fieldAst.name.value : undefined
                 const alias = fieldAst.alias ? fieldAst.alias.value : undefined
                 const field: FieldPOJO = {
-                    name: fieldAst.name.value
+                    name: fieldAst.name.value,
                 }
                 if (alias) {
                     field.alias = alias
@@ -147,19 +151,19 @@ class ASTtoPOJOConverter {
                         field,
                         parentSchemaDef
                     )
-                    const typeDef =
-                        returnType &&
-                        this.info.schema.getType(returnType.toString())
-                    if (!typeDef) {
+                    if (!returnType) {
                         throw Error(
                             `graphqlOperationToPOJO(): Error matching query to schema: could not find type definition for field '${fieldPath}'`
                         )
+                    }
+                    if (this.options.includeReturnTypes) {
+                        field.returnType = returnType
                     }
                     field.fields = this.convert(
                         fieldAst,
                         [],
                         fieldPath,
-                        (typeDef: any)
+                        (getNamedType(returnType): any)
                     )
                 }
                 const args = this.argumentsFromAst(fieldAst.arguments)
@@ -222,7 +226,7 @@ class ASTtoPOJOConverter {
         }
         // prettier-ignore
         const schemaField: GraphQLField<*, *> = (parentSchemaDef: any).getFields()[field.name]
-        return schemaField && getNamedType(schemaField.type)
+        return schemaField && schemaField.type
     }
 
     mergeFieldSelections(
@@ -237,7 +241,7 @@ class ASTtoPOJOConverter {
         }
         // $FlowFixMe - this can be removed after Object.fromEntries() is in the standard flow lib
         const selectionSet1ByName = Object.fromEntries(
-            selectionSet1.map(field => [field.alias || field.name, field])
+            selectionSet1.map((field) => [field.alias || field.name, field])
         )
         const mergedFieldsByName = { ...selectionSet1ByName }
         for (const field of selectionSet2) {
@@ -291,7 +295,7 @@ class ASTtoPOJOConverter {
         const { variableValues } = this.info
         // $FlowFixMe
         const args = Object.fromEntries(
-            ast.map(arg => {
+            ast.map((arg) => {
                 const name = arg.name.value
                 // @TODO refactor to use valueFromAST() and pass type info in the expected format so that
                 // we can support custom scalars as input arguments
@@ -308,10 +312,10 @@ class ASTtoPOJOConverter {
         }
         // $FlowFixMe
         return Object.fromEntries(
-            ast.map(directive => {
+            ast.map((directive) => {
                 return [
                     directive.name.value,
-                    this.argumentsFromAst(directive.arguments)
+                    this.argumentsFromAst(directive.arguments),
                 ]
             })
         )
