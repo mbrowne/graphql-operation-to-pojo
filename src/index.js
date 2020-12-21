@@ -125,11 +125,9 @@ class ASTtoPOJOConverter {
                 }
             } else {
                 const fieldAst: FieldNode = (selectionAst: any)
-                const name = fieldAst.name ? fieldAst.name.value : undefined
+                const name = fieldAst.name.value
                 const alias = fieldAst.alias ? fieldAst.alias.value : undefined
-                const field: FieldPOJO = {
-                    name: fieldAst.name.value,
-                }
+                const field: FieldPOJO = { name }
                 if (alias) {
                     field.alias = alias
                 }
@@ -219,7 +217,10 @@ class ASTtoPOJOConverter {
         field: FieldPOJO,
         parentSchemaDef: GraphQLCompositeType,
         fieldPath: string
-    ): GraphQLOutputType {
+    ): ?GraphQLOutputType {
+        if (field.name === '__typename') {
+            return
+        }
         // Get the concrete type for fragment fields.
         // This is needed because for fragment fields, the original parentSchemaDef might be a union or interface type.
         if (field.fragmentType) {
