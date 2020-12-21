@@ -67,14 +67,14 @@ describe('graphqlOperationToPOJO', () => {
                         {
                             name: 'widgets',
                             fields: [{ name: 'id' }, { name: 'name' }],
-                            fragmentType: 'User'
+                            fragmentType: 'User',
                         },
                         { name: 'name', fragmentType: 'User' },
-                        { name: 'id', fragmentType: 'User' }
+                        { name: 'id', fragmentType: 'User' },
                     ],
-                    arguments: { id: '1' }
-                }
-            ]
+                    arguments: { id: '1' },
+                },
+            ],
         })
     })
 
@@ -93,12 +93,12 @@ describe('graphqlOperationToPOJO', () => {
                         {
                             name: 'widgets',
                             alias: 'aliasForWidgets',
-                            fields: [{ name: 'id' }]
-                        }
+                            fields: [{ name: 'id' }],
+                        },
                     ],
-                    arguments: { id: '1' }
-                }
-            ]
+                    arguments: { id: '1' },
+                },
+            ],
         })
     })
 
@@ -122,13 +122,13 @@ describe('graphqlOperationToPOJO', () => {
                             alias: 'aliasForWidgets',
                             path: 'user.aliasForWidgets',
                             fields: [
-                                { name: 'id', path: 'user.aliasForWidgets.id' }
-                            ]
-                        }
+                                { name: 'id', path: 'user.aliasForWidgets.id' },
+                            ],
+                        },
                     ],
-                    arguments: { id: '1' }
-                }
-            ]
+                    arguments: { id: '1' },
+                },
+            ],
         })
     })
 
@@ -139,13 +139,6 @@ describe('graphqlOperationToPOJO', () => {
             throw new Error('graphql error(s):\n' + JSON.stringify(data.errors))
         }
         const userType = schema.getType('User')
-
-        const queryPojo = graphqlOperationToPOJO(info, {
-            includeReturnTypes: true
-        })
-        const returnType = getNamedType(queryPojo.fields[0].returnType)
-        console.log(returnType.toString())
-
         expect(
             graphqlOperationToPOJO(info, { includeReturnTypes: true })
         ).toEqual({
@@ -159,12 +152,12 @@ describe('graphqlOperationToPOJO', () => {
                             name: 'widgets',
                             alias: 'aliasForWidgets',
                             returnType: userType.getFields()['widgets'].type,
-                            fields: [{ name: 'id' }]
-                        }
+                            fields: [{ name: 'id' }],
+                        },
                     ],
-                    arguments: { id: '1' }
-                }
-            ]
+                    arguments: { id: '1' },
+                },
+            ],
         })
     })
 })

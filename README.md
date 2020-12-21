@@ -40,7 +40,7 @@ Options can optionally be passed as a second argument, e.g.:
 ```js
 graphqlOperationToPOJO(info, {
     includeFieldPath: true,
-    includeReturnType: true
+    includeReturnType: true,
 })
 ```
 

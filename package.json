@@ -10,7 +10,7 @@
     "build:flow": "for file in $(find ./src -name '*.js'); do cp \"$file\" `echo \"$file\" | sed 's/\\/src\\//\\/lib\\//g'`.flow; done",
     "flow": "flow",
     "watch": "babel -w src/ -d lib/",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run test && npm run build",
     "test": "flow check && jest",
     "testonly": "jest"
   },
@@ -40,20 +40,20 @@
   "homepage": "https://github.com/mbrowne/graphql-operation-to-pojo#readme",
   "typings": "typings/index.d.ts",
   "devDependencies": {
-    "@babel/cli": "^7.5.5",
-    "@babel/core": "^7.5.5",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
-    "@babel/preset-env": "^7.5.5",
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
+    "@babel/preset-env": "^7.12.11",
     "@babel/preset-flow": "^7.12.1",
     "babel-core": "~7.0.0-bridge.0",
-    "babel-jest": "^24.9.0",
-    "flow-bin": "^0.101.1",
-    "graphql": "^14.5.4",
-    "husky": "^2.7.0",
-    "jest": "^24.9.0",
-    "prettier": "~1.18.2",
-    "pretty-quick": "^1.11.1"
+    "babel-jest": "^26.6.3",
+    "flow-bin": "^0.141.0",
+    "graphql": "^15.4.0",
+    "husky": "^4.3.6",
+    "jest": "^26.6.3",
+    "prettier": "^2.2.1",
+    "pretty-quick": "^3.1.0"
   },
   "peerDependencies": {
     "graphql": ">=12.0.0"

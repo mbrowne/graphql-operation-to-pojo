@@ -42,7 +42,7 @@ export type Options = {
 export function graphqlOperationToJSON(
     info: GraphQLResolveInfo,
     options?: Options
-) {
+): string {
     return JSON.stringify(graphqlOperationToPOJO(info, options))
 }
 
