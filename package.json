@@ -1,6 +1,6 @@
 {
   "name": "graphql-operation-to-pojo",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Converts GraphQL operations to plain old JS objects (POJOs), ready to to be serialized to JSON",
   "main": "lib/index.js",
   "scripts": {

@@ -1,5 +1,5 @@
 import './polyfills'
-import { valueFromASTUntyped, getNamedType } from 'graphql'
+import { valueFromASTUntyped, getNamedType, GraphQLString } from 'graphql'
 import type {
     GraphQLResolveInfo,
     GraphQLCompositeType,
@@ -219,7 +219,7 @@ class ASTtoPOJOConverter {
         fieldPath: string
     ): ?GraphQLOutputType {
         if (field.name === '__typename') {
-            return
+            return GraphQLString
         }
         // Get the concrete type for fragment fields.
         // This is needed because for fragment fields, the original parentSchemaDef might be a union or interface type.
